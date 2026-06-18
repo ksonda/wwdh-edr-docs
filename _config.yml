@@ -19,3 +19,13 @@ defaults:
 
 exclude:
   - README.md
+  - Gemfile
+  - Gemfile.lock
+  - .bundle
+  - .github
+  - node_modules
+  - vendor
+  - vendor/bundle
+  - vendor/cache
+  - vendor/gems
+  - vendor/ruby

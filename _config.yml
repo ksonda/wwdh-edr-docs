@@ -1,0 +1,21 @@
+title: Western Water Datahub EDR Guide
+description: Standalone, Markdown-editable tutorials for using the Western Water Datahub EDR API.
+url: ""
+baseurl: ""
+repository: ""
+
+theme: null
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+exclude:
+  - README.md

@@ -5,10 +5,10 @@ lede: A standalone, Markdown-editable guide for exploring the Western Water Data
 ---
 
 The Western Water Datahub publishes water-relevant datasets through a unified
-OGC API interface supported by the United States Bureau of Reclamation. This
-site packages the WWDH-focused `edr4r` vignette material as a standalone
-GitHub Pages resource for analysts, water data SMEs, and developers who need
-repeatable examples without digging through package documentation.
+OGC API interface. This site packages the WWDH-focused `edr4r` vignette
+material as a standalone GitHub Pages resource for analysts, water data SMEs,
+and developers who need repeatable examples without digging through package
+documentation.
 
 <div class="card-grid">
   <section class="card">

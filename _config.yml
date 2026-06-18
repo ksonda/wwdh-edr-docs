@@ -1,8 +1,8 @@
 title: Western Water Datahub EDR Guide
-description: Standalone, Markdown-editable tutorials for using the Western Water Datahub EDR API.
-url: ""
-baseurl: ""
-repository: ""
+description: Standalone, Markdown-editable documentation for using the Western Water Datahub EDR API.
+url: "https://ksonda.github.io"
+baseurl: "/wwdh-edr-docs"
+repository: "ksonda/wwdh-edr-docs"
 
 theme: null
 markdown: kramdown

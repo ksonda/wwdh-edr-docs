@@ -14,13 +14,14 @@
           <img class="brand-logo" src="{{ '/assets/img/BofR-logo-white.png' | relative_url }}" alt="Bureau of Reclamation">
           <span>
             <strong>Western Water Datahub</strong>
-            <small>EDR tutorials and field guide</small>
+            <small>Dataset, concepts, and API workflow guides</small>
           </span>
         </a>
         <nav class="site-nav" aria-label="Main navigation">
           <a href="{{ '/' | relative_url }}">Home</a>
-          <a href="{{ '/field-guide/' | relative_url }}">Field guide</a>
-          <a href="{{ '/raw-http/' | relative_url }}">Raw HTTP</a>
+          <a href="{{ '/field-guide/' | relative_url }}">Datasets</a>
+          <a href="{{ '/concepts/' | relative_url }}">EDR concepts</a>
+          <a href="{{ '/raw-http/' | relative_url }}">API workflow</a>
           <a href="https://api.wwdh.internetofwater.app/openapi" rel="noopener">OpenAPI</a>
         </nav>
       </div>
@@ -37,8 +38,9 @@
       <aside class="sidebar" aria-label="Guide navigation">
         <p class="sidebar-title">Guide</p>
         <a href="{{ '/' | relative_url }}">Overview</a>
-        <a href="{{ '/field-guide/' | relative_url }}">Collection field guide</a>
-        <a href="{{ '/raw-http/' | relative_url }}">Raw HTTP guide</a>
+        <a href="{{ '/field-guide/' | relative_url }}">Dataset guide</a>
+        <a href="{{ '/concepts/' | relative_url }}">EDR concepts</a>
+        <a href="{{ '/raw-http/' | relative_url }}">API workflow</a>
         <p class="sidebar-title">External links</p>
         <a href="https://wwdh.internetofwater.app/" rel="noopener">WWDH application</a>
         <a href="https://api.wwdh.internetofwater.app" rel="noopener">EDR API</a>
@@ -55,5 +57,57 @@
         Styling uses public Western Water Datahub / USBR color tokens and Bureau of Reclamation assets.
       </p>
     </footer>
+    <script>
+      (() => {
+        const groups = document.querySelectorAll("[data-code-tabs]");
+        if (!groups.length) return;
+
+        const storageKey = "wwdh-code-tab";
+        const availableTabs = ["http", "python", "r-raw", "edr4r"];
+
+        const storedTab = (() => {
+          try {
+            return window.localStorage.getItem(storageKey);
+          } catch (_error) {
+            return null;
+          }
+        })();
+
+        const setActiveTab = (tabName) => {
+          const nextTab = availableTabs.includes(tabName) ? tabName : "http";
+
+          groups.forEach((group) => {
+            const buttons = group.querySelectorAll("[data-code-tab]");
+            const panels = group.querySelectorAll("[data-code-panel]");
+
+            buttons.forEach((button) => {
+              const selected = button.dataset.codeTab === nextTab;
+              button.setAttribute("aria-selected", String(selected));
+              button.setAttribute("role", "tab");
+            });
+
+            panels.forEach((panel) => {
+              const selected = panel.dataset.codePanel === nextTab;
+              panel.hidden = !selected;
+              panel.setAttribute("role", "tabpanel");
+            });
+          });
+
+          try {
+            window.localStorage.setItem(storageKey, nextTab);
+          } catch (_error) {
+            // Ignore storage failures; tabs still work for the current page.
+          }
+        };
+
+        groups.forEach((group) => {
+          group.querySelectorAll("[data-code-tab]").forEach((button) => {
+            button.addEventListener("click", () => setActiveTab(button.dataset.codeTab));
+          });
+        });
+
+        setActiveTab(storedTab || "http");
+      })();
+    </script>
   </body>
 </html>

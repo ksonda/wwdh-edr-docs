@@ -12,14 +12,19 @@ repeatable examples without digging through package documentation.
 
 <div class="card-grid">
   <section class="card">
-    <h2>Collection Field Guide</h2>
-    <p>Start here when choosing which WWDH collection and query shape to use.</p>
-    <p><a class="button-link" href="{{ '/field-guide/' | relative_url }}">Open the field guide</a></p>
+    <h2>Dataset Guide</h2>
+    <p>Start here to see what kinds of datasets are in the API and which collection family fits your task.</p>
+    <p><a class="button-link" href="{{ '/field-guide/' | relative_url }}">Open dataset guide</a></p>
   </section>
   <section class="card">
-    <h2>Raw HTTP Guide</h2>
-    <p>Use browser URLs, curl, or any HTTP client to call the WWDH API directly.</p>
-    <p><a class="button-link" href="{{ '/raw-http/' | relative_url }}">Open the HTTP guide</a></p>
+    <h2>EDR Concepts</h2>
+    <p>Learn how collections, items, locations, parameters, coverages, axes, and ranges map to water data.</p>
+    <p><a class="button-link" href="{{ '/concepts/' | relative_url }}">Open concepts</a></p>
+  </section>
+  <section class="card">
+    <h2>API Workflow</h2>
+    <p>Call the same workflow as HTTP, Python, raw R, or <code>edr4r</code> with toggleable examples.</p>
+    <p><a class="button-link" href="{{ '/raw-http/' | relative_url }}">Open API workflow</a></p>
   </section>
 </div>
 

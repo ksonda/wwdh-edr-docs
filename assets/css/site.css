@@ -75,8 +75,8 @@ a:hover {
 }
 
 .brand-logo {
-  width: 4.5rem;
-  max-height: 3.1rem;
+  width: clamp(13rem, 25vw, 19rem);
+  height: auto;
   object-fit: contain;
 }
 

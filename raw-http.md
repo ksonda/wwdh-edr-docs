@@ -105,6 +105,37 @@ Useful `f` values:
 | `csv` | Some feature or location endpoints | CSV table |
 | `jsonld` | Linked-data representation when advertised | JSON-LD |
 
+**Expected output:** A successful request returns a JSON document, not a
+rendered table. For `/collections`, the top-level keys include `links`,
+`collections`, and sometimes `parameterGroups`.
+
+Example JSON shape:
+
+``` json
+{
+  "links": [
+    {
+      "rel": "self",
+      "type": "application/json",
+      "href": "https://api.wwdh.internetofwater.app/collections?f=json"
+    }
+  ],
+  "collections": [
+    {
+      "id": "rise-edr",
+      "title": "USBR Reclamation Information Sharing Environment (RISE)"
+    }
+  ]
+}
+```
+
+**How to read it:** Confirm the response is HTTP 200 and the body is
+JSON. If a browser shows a formatted HTML page instead, check that the
+URL includes `f=json`.
+
+**Next decision:** Move from the service-level response to the
+collection list and choose the dataset family you want to inspect.
+
 ## 2. List collections and identify dataset families
 
 `/collections` is the catalog. Each collection has an `id`, `title`,
@@ -184,6 +215,42 @@ Examples of current collection families include reservoir operations
 snow station data (`snotel-edr`, `awdb-forecasts-edr`), basin snow
 summaries (`snotel-huc06-means`), NOAA forecast layers, drought monitor
 layers, and DOI/USBR reference boundaries.
+
+**Expected output:** A collection listing, with one record per dataset.
+Each useful row has at least an `id`, a `title`, links, an extent, and
+possibly a `data_queries` object.
+
+Example JSON shape:
+
+``` json
+{
+  "collections": [
+    {
+      "id": "snotel-edr",
+      "title": "USDA Snowpack Telemetry Network (SNOTEL)",
+      "data_queries": {
+        "locations": {},
+        "cube": {},
+        "area": {},
+        "items": {}
+      }
+    },
+    {
+      "id": "snotel-huc06-means",
+      "title": "USDA Snotel Snow Water Equivalent Aggregated by HUC6"
+    }
+  ]
+}
+```
+
+**How to read it:** Treat `id` as the value you put in URLs. A non-empty
+`data_queries` object means the collection advertises EDR sampling
+routes such as `locations`, `cube`, or `area`. A missing or empty
+`data_queries` object usually means the collection is a feature layer
+best explored through `/items`.
+
+**Next decision:** Pick one collection id, then inspect that collection
+before requesting data values.
 
 ## 3. Inspect one collection
 
@@ -268,6 +335,44 @@ params[, c("id", "name", "unit_symbol")]
 Use exact parameter ids in requests. For example, SNOTEL snow water
 equivalent is `WTEQ`; USACE flood storage is `Flood Storage`; RISE
 parameter ids are numeric strings such as `3` or `1830`.
+
+**Expected output:** One collection metadata document. For an EDR
+collection, expect fields such as `title`, `extent`, `links`,
+`data_queries`, and `parameter_names`.
+
+Example JSON shape:
+
+``` json
+{
+  "id": "snotel-edr",
+  "title": "USDA Snowpack Telemetry Network (SNOTEL)",
+  "parameter_names": {
+    "WTEQ": {
+      "type": "Parameter",
+      "description": {"en": "Snow Water Equivalent"}
+    },
+    "SNWD": {
+      "type": "Parameter",
+      "description": {"en": "Snow Depth"}
+    }
+  },
+  "data_queries": {
+    "locations": {},
+    "cube": {},
+    "area": {},
+    "items": {}
+  }
+}
+```
+
+**How to read it:** Use `parameter_names` keys exactly as
+`parameter-name` values. Use `data_queries` to decide which routes are
+valid. Use `links` to find related HTML pages, `/items`, `/queryables`,
+schemas, and source documentation.
+
+**Next decision:** If you need to find places, continue to `/locations`
+or `/items`. If you already know a location id, skip ahead to a value
+request.
 
 ## 4. Find locations or features
 
@@ -355,6 +460,44 @@ GeoJSON features describe places. For station collections, the feature
 such as station name, network code, elevation, or project name vary by
 provider.
 
+**Expected output:** A GeoJSON `FeatureCollection`. Each feature has an
+`id`, a `geometry`, and a `properties` object with provider-specific
+metadata.
+
+Example JSON shape:
+
+``` json
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 303,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-105.06766, 37.33067]
+      },
+      "properties": {
+        "stationTriplet": "303:CO:SNTL",
+        "name": "Apishapa",
+        "stateCode": "CO",
+        "networkCode": "SNTL"
+      }
+    }
+  ]
+}
+```
+
+**How to read it:** Use `geometry` to locate the site or feature. Use
+the feature `id` as the stable API identifier unless the provider
+documents another id field. Use `properties` for labels, station codes,
+network names, elevations, project names, and other context. If
+`features` is empty, the bbox or filters did not match anything, or the
+provider did not honor that filter combination.
+
+**Next decision:** Choose a feature or location id for a single-site
+query, or keep the bbox and use `/cube` for a bulk request.
+
 ## 5. Request one known location
 
 Once you know a location id, request a traditional single-site time
@@ -441,6 +584,47 @@ The response is CoverageJSON. For one site and one parameter, it is
 usually a `PointSeries`: one `x`, one `y`, many `t` values, and one
 range array.
 
+**Expected output:** A CoverageJSON `Coverage` or `CoverageCollection`.
+For this example, expect a `PointSeries` with `domain.axes.x`,
+`domain.axes.y`, `domain.axes.t`, and a `ranges.WTEQ.values` array.
+
+Example JSON shape:
+
+``` json
+{
+  "type": "Coverage",
+  "domain": {
+    "domainType": "PointSeries",
+    "axes": {
+      "x": {"values": [-105.06766]},
+      "y": {"values": [37.33067]},
+      "t": {
+        "values": [
+          "2024-02-01T00:00:00Z",
+          "2024-02-02T00:00:00Z"
+        ]
+      }
+    }
+  },
+  "ranges": {
+    "WTEQ": {
+      "type": "NdArray",
+      "axisNames": ["t"],
+      "values": [11.6, 11.7]
+    }
+  }
+}
+```
+
+**How to read it:** `x` and `y` identify the site location. `t` lists
+the returned timestamps. `ranges.WTEQ.values` contains the SWE values,
+aligned to the axis order in `ranges.WTEQ.axisNames`. In `edr4r`, the
+tidy table should have one row per timestamp with `datetime` and
+`value` columns.
+
+**Next decision:** Flatten the coverage into rows for analysis, or move
+from one location to a bbox-based `/cube` request.
+
 ## 6. Request many sites in a bounding box
 
 Use `/cube` when a collection advertises it and you want values for
@@ -523,6 +707,46 @@ swe_tbl <- covjson_to_tibble(swe)
 For reservoir collections, the same pattern works with reservoir
 parameters. For example, RISE reservoir storage often uses parameter id
 `3`, and USACE outflow uses `Outflow`.
+
+**Expected output:** A CoverageJSON `CoverageCollection` or `Coverage`
+containing the values found inside the bbox and time window. Station
+collections often return one coverage per matched site; grid-like
+collections may return one coverage with multi-axis arrays.
+
+Example JSON shape:
+
+``` json
+{
+  "type": "CoverageCollection",
+  "coverages": [
+    {
+      "type": "Coverage",
+      "domain": {
+        "domainType": "PointSeries",
+        "axes": {
+          "x": {"values": [-105.06766]},
+          "y": {"values": [37.33067]},
+          "t": {"values": ["2024-02-01T00:00:00Z"]}
+        }
+      },
+      "ranges": {
+        "WTEQ": {
+          "axisNames": ["t"],
+          "values": [11.6]
+        }
+      }
+    }
+  ]
+}
+```
+
+**How to read it:** Inspect each coverage's `domain` to see which place,
+cell, or time axis it represents. Inspect `ranges` for the requested
+parameter values. If the response is much smaller than expected, the
+bbox, datetime interval, or parameter may not overlap available data.
+
+**Next decision:** Flatten the coverage into a table, join it to site
+metadata, or broaden only one dimension at a time.
 
 ## 7. Query feature layers with `/queryables` and `/items`
 
@@ -607,6 +831,53 @@ huc_swe <- edr_items(
 
 Feature responses are GeoJSON FeatureCollections. They describe features
 and attributes, not CoverageJSON time-series arrays.
+
+**Expected output:** `/queryables` returns a JSON Schema-like document
+whose `properties` are filterable fields. `/items` returns a GeoJSON
+`FeatureCollection`.
+
+Example `/queryables` JSON shape:
+
+``` json
+{
+  "type": "object",
+  "properties": {
+    "geometry": {"$ref": "https://geojson.org/schema/Geometry.json"},
+    "name": {"type": "string"},
+    "basin_index": {"type": "number"}
+  }
+}
+```
+
+Example `/items` JSON shape:
+
+``` json
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "090400",
+      "geometry": {"type": "MultiPolygon"},
+      "properties": {
+        "name": "Upper South Saskatchewan River",
+        "basin_index": 72.9,
+        "latest_full_day_of_data": "06-17"
+      }
+    }
+  ]
+}
+```
+
+**How to read it:** Use queryable property names as candidate filters on
+`/items`. Read item `geometry` as the feature shape and item
+`properties` as attributes such as basin names, drought categories,
+forecast values, region ids, or station lists. Do not look for
+CoverageJSON `domain` or `ranges` in feature responses.
+
+**Next decision:** Add filters, lower `limit`, or add `bbox` until the
+feature set is manageable. If the feature belongs to an EDR collection,
+you may use its identifiers in a later sampling query.
 
 ## 8. Query an area
 
@@ -701,6 +972,47 @@ swe_area_tbl <- covjson_to_tibble(swe_area)
 
 For complex polygons, use a client that URL-encodes parameters for you.
 Very long URLs can hit browser, proxy, or server limits.
+
+**Expected output:** A CoverageJSON response for values associated with
+the polygon query. Depending on the provider, the response may represent
+matched stations inside the polygon, sampled values for the area, or an
+aggregate-like coverage.
+
+Example JSON shape:
+
+``` json
+{
+  "type": "CoverageCollection",
+  "coverages": [
+    {
+      "type": "Coverage",
+      "domain": {
+        "domainType": "PointSeries",
+        "axes": {
+          "x": {"values": [-105.9]},
+          "y": {"values": [39.1]},
+          "t": {"values": ["2024-02-01T00:00:00Z"]}
+        }
+      },
+      "ranges": {
+        "WTEQ": {
+          "axisNames": ["t"],
+          "values": [12.4]
+        }
+      }
+    }
+  ]
+}
+```
+
+**How to read it:** Start with `domain.domainType` and `domain.axes` to
+understand whether the response is point-series-like, area-like, or
+multi-axis. Then read `ranges` for the requested parameter values. If
+the request fails or returns too much data, simplify the polygon or
+test the same area with a bbox first.
+
+**Next decision:** Flatten the coverage into rows, or reduce the
+polygon/time/parameter scope and retry.
 
 ## 9. Flatten CoverageJSON into a table
 
@@ -826,6 +1138,34 @@ and multi-axis coverages need array indexing across each `axisNames`
 dimension. Use `covjson_to_tibble()` when you want that handled for
 you.
 
+**Expected output:** A rectangular table with columns such as
+`coverage_id`, `parameter`, `datetime`, `x`, `y`, and `value`.
+
+Example row-oriented JSON shape:
+
+``` json
+[
+  {
+    "coverage_id": "1",
+    "parameter": "WTEQ",
+    "datetime": "2024-02-01T00:00:00Z",
+    "x": -105.06766,
+    "y": 37.33067,
+    "value": 11.6
+  }
+]
+```
+
+**How to read it:** Each row is the traditional observation, forecast,
+or modeled-value record most analysts expect: one parameter at one
+place and time. `coverage_id` keeps a connection back to the original
+CoverageJSON object. Missing or `NA` values usually mean the provider
+returned an explicit missing value for that coordinate/time.
+
+**Next decision:** Plot, map, join, or export the table. If the coverage
+is a grid or another multi-axis structure, use a parser that understands
+`axisNames` rather than the simple point-series helper.
+
 ## 10. Scale up carefully
 
 Once a small query works, enlarge one dimension at a time: wider bbox,
@@ -916,7 +1256,51 @@ larger_time_window <- edr_cube(
 </div>
 </div>
 
+**Expected output:** The response shape should be the same as the small
+query, but with more features, coverages, timestamps, parameters, or
+rows after flattening.
+
+Example JSON shape:
+
+``` json
+{
+  "type": "CoverageCollection",
+  "coverages": [
+    {"type": "Coverage", "ranges": {"WTEQ": {"values": [11.6]}}},
+    {"type": "Coverage", "ranges": {"WTEQ": {"values": [8.2]}}}
+  ]
+}
+```
+
+**How to read it:** Watch response time, payload size, row count,
+feature count, and missing-value patterns. If the larger request fails,
+the last dimension you enlarged is the most likely source of the
+problem.
+
+**Next decision:** Cache the largest trusted result locally, then widen
+one more dimension only when you need it.
+
 ## 11. Troubleshooting raw requests
+
+**Expected output:** This section does not introduce a new request. Use
+it when the response you got does not match the expected output from an
+earlier step.
+
+Example error JSON shape:
+
+``` json
+{
+  "code": "InvalidParameterValue",
+  "description": "The requested parameter is not available for this collection."
+}
+```
+
+**How to read it:** Match the observed symptom to the closest row in the
+table, then adjust only the likely cause before retrying. Keep the last
+successful small request handy so you can compare behavior.
+
+**Next decision:** Return to the earlier workflow step, simplify the
+query, and add filters, parameters, or time range back one at a time.
 
 | Symptom | Likely cause | What to try |
 |---|---|---|

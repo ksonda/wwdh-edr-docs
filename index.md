@@ -5,10 +5,8 @@ lede: A guide for exploring the Western Water Datahub OGC API - Environmental Da
 ---
 
 The Western Water Datahub publishes water-relevant datasets through a unified
-OGC API interface. This site packages the WWDH-focused `edr4r` vignette
-material as a standalone GitHub Pages resource for analysts, water data SMEs,
-and developers who need repeatable examples without digging through package
-documentation.
+OGC API interface. This site packages resources for analysts, water data SMEs,
+and developers who need repeatable examples without digging through OpenAPI documents.
 
 <div class="card-grid">
   <section class="card">

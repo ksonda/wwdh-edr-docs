@@ -1,13 +1,14 @@
 # Western Water Datahub EDR Guide
 
-Standalone GitHub Pages source for WWDH-focused EDR tutorials adapted from the
-`edr4r` package vignettes.
+Standalone GitHub Pages source for WWDH-focused EDR tutorials and workflow
+guidance.
 
 ## Edit content
 
 - `index.md` is the landing page.
-- `field-guide.md` is adapted from `vignettes/wwdh-collections.Rmd`.
-- `raw-http.md` is adapted from `vignettes/wwdh-http-guide.Rmd`.
+- `field-guide.md` explains the available datasets and collection families.
+- `raw-http.md` walks through the API workflow with HTTP, Python, raw R, and
+  `edr4r` examples.
 - `_layouts/default.html` controls the page frame.
 - `assets/css/site.css` controls WWDH/USBR styling.
 

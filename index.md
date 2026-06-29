@@ -5,10 +5,9 @@ lede: A standalone, Markdown-editable guide for exploring the Western Water Data
 ---
 
 The Western Water Datahub publishes water-relevant datasets through a unified
-OGC API interface. This site packages the WWDH-focused `edr4r` vignette
-material as a standalone GitHub Pages resource for analysts, water data SMEs,
-and developers who need repeatable examples without digging through package
-documentation.
+OGC API interface. This site packages the WWDH EDR workflow as a standalone
+GitHub Pages resource for analysts, water data SMEs, and developers who need
+repeatable examples.
 
 <div class="card-grid">
   <section class="card">
@@ -30,7 +29,7 @@ documentation.
 
 ## What this site is
 
-- A standalone GitHub Pages site, independent from the `edr4r` package site.
+- A standalone GitHub Pages site for WWDH EDR users.
 - Plain Markdown source that can be edited directly in GitHub.
 - Static documentation: no live API calls are made while building the site.
 - Branded with WWDH/USBR color tokens and Bureau of Reclamation logo assets
@@ -42,4 +41,3 @@ documentation.
 - [WWDH EDR API](https://api.wwdh.internetofwater.app)
 - [WWDH OpenAPI reference](https://api.wwdh.internetofwater.app/openapi)
 - [Western Water Datahub GitHub repository](https://github.com/internetofwater/Western-Water-Datahub)
-- [`edr4r` package site](https://ksonda.github.io/edr4r/)

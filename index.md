@@ -1,13 +1,14 @@
 ---
 title: Western Water Datahub EDR Guide
 hero_title: Western Water Datahub EDR Guide
-lede: A standalone, Markdown-editable guide for exploring the Western Water Datahub OGC API - Environmental Data Retrieval service.
+lede: A guide for exploring the Western Water Datahub OGC API - Environmental Data Retrieval service.
 ---
 
-The Western Water Datahub publishes water-relevant datasets through a unified
-OGC API interface. This site packages the WWDH EDR workflow as a standalone
+The Western Water Datahub (WWDH) publishes water-relevant datasets through a unified
+OGC API EDR interface. This site packages the WWDH EDR workflow as a standalone
 GitHub Pages resource for analysts, water data SMEs, and developers who need
 repeatable examples.
+
 
 <div class="card-grid">
   <section class="card">

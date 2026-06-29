@@ -14,9 +14,8 @@ is the authoritative endpoint reference. This page is the dataset guide:
 it explains what kinds of datasets are present and how to decide which
 collection family to open first.
 
-The live collection list was checked on June 18, 2026. The Datahub is
-provider-backed and changes over time, so always re-run discovery before
-starting production analysis.
+The Datahub is provider-backed and changes over time, so always re-run
+discovery before starting production analysis.
 
 ## 1. What kinds of datasets are in the API
 
@@ -40,8 +39,9 @@ such as `locations`, `cube`, `area`, and `items`. Collections without
 advertised EDR data queries are often still useful, but they are usually
 feature layers rather than time-series sampling services.
 
-If you have seen older examples that use `usgs-prism`, note that it was
-not present in the live collection list checked on June 18, 2026.
+If you have seen older examples that use `usgs-prism`, re-run discovery
+before relying on that collection because available collections can
+change.
 
 For the conceptual model behind collections, items, locations,
 parameters, coverages, axes, and ranges, see the

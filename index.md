@@ -28,14 +28,6 @@ repeatable examples.
   </section>
 </div>
 
-## What this site is
-
-- A standalone GitHub Pages site for WWDH EDR users.
-- Plain Markdown source that can be edited directly in GitHub.
-- Static documentation: no live API calls are made while building the site.
-- Branded with WWDH/USBR color tokens and Bureau of Reclamation logo assets
-  from the public Western Water Datahub repository.
-
 ## Key links
 
 - [Western Water Datahub application](https://wwdh.internetofwater.app/)

@@ -15,9 +15,8 @@ toggleable forms:
 - **edr4r**: higher-level helpers that wrap the same routes.
 
 The examples use `https://api.wwdh.internetofwater.app` as the base URL.
-They were written against live collection metadata checked on
-June 18, 2026. Re-run discovery before important work because the
-Datahub is provider-backed and collection behavior can change.
+Re-run discovery before important work because the Datahub is
+provider-backed and collection behavior can change.
 
 ## 1. Set the base URL and response format
 
